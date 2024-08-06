@@ -1,23 +1,48 @@
-import React,{ useState } from 'react';
+import React, {useState,useContext} from 'react';
 import { View, Text, TextInput, TouchableOpacity, FlatList,StyleSheet } from 'react-native';
-import { Dimensions } from 'react-native';
+import {Dimensions} from 'react-native';
+import { IconButton } from 'react-native-paper';
+import AuthContext from '../context/AuthContext';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
 const { width } = Dimensions.get('window');
 export default function TodoScreen() {
+
+  const getCurrentTime = () => {
+    const now = new Date();
+    const hours = now.getHours().toString().padStart(2, '0');
+    const minutes = now.getMinutes().toString().padStart(2, '0');
+    const seconds = now.getSeconds().toString().padStart(2, '0');
+    return `${hours}:${minutes}:${seconds}`;
+  };
+
+  const  [todo,setTodo]=useState("");
+  const [todolist,setTodoList]=useState([]);
+  const [user, setUser] = useState(null);
+  // const {test}=useContext(AuthContext);
+
   const dummyData = [
     { id: '01', title: 'wash car' },
-    { id: '02', title: 'ride car' },
+    {id: '02', title: 'ride car'},
     { id: '03', title: 'wash car' },
     { id: '04', title: 'ride car' },
   ];
-  
+
   const renderTodos = ({item}) => {
     return (
       <View style={styles.card}>
-        <Text>{item.title}</Text>
+        <Text style={{color: '#000', fontWeight: 'bold'}}>{item.title}</Text> 
+        <Text>{getCurrentTime()}</Text>
+
+        <View style={{flexDirection:"row"}}>
+          <IconButton icon="pencil"/>
+          <IconButton icon="trash-can"/>
+      </View>
       </View>
     )
   }
   const [numColumns, setNumColumns] = useState(2);
+
   return (
     <View style={{ marginHorizontal: 16 }}>
       {/* <Text style={{ textAlign: 'center' }}>TodoScreen</Text> */}
@@ -27,12 +52,13 @@ export default function TodoScreen() {
           borderWidth: 2,
           borderRadius: 8,
           paddingHorizontal: 14,
-          textAlign: 'center', // Center the text in the TextInput
+          textAlign: 'center',
+          color:'black' // Center the text in the TextInput
         }}
         placeholder='Enter Your Todo Here'
       />
       <TouchableOpacity
-        style={{ borderRadius: 8, paddingVertical: 8, backgroundColor: '#1e90ff', alignItems: 'center', marginTop: 24 }}
+        style={{ borderRadius: 8, paddingVertical: 8, backgroundColor: '#1e90ff', alignItems: 'center', marginVertical: 24 }}
       >
         <Text style={{ textAlign: 'center', color: '#fff', fontWeight: 'bold', fontSize: 18 }}>Add</Text>
       </TouchableOpacity>
